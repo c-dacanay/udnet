@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;1,200;1,400;1,600&display=swap"
+    rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body>
+    <div id="container">
+      <div class="client" id="ben">
+        <h2>Ben</h2>
+        <p>Last Check-In:
+          <div id="c1"></div>
+        </p>
+      </div>
+      <div class="client" id="stina">
+        <h2>Christina</h2>
+        <p>Last Check-In:
+          <div id="c2"></div>
+        </p>
+      </div>
+      <div class="client" id="em">
+        <h2>Emily</h2>
+        <p>Last Check-In:
+          <div id="c3"></div>
+        </p>
+      </div>
+  </div>
+    <!-- <button id="check-in">Check-In</button> -->
+    <script>
+      // Open and connect input socket
+let socket = io('/input');
+let ben = document.getElementById("c1")
+let stina = document.getElementById("c2")
+let em = document.getElementById("c3")
+
+socket.on('connection', () => {
+  console.log("Connected");
+});
+
+socket.on('disconnect', () => {
+  console.log("Disconnected");
+});
+
+socket.on('data', (data) =>{
+    console.log('recieving data', data.client, data.date);
+
+    if (data.client == 1){
+      let old = ben.innerHTML
+      ben.innerHTML = data.date + '<br><br>' + old;
+    } else if (data.client == 2 ){
+      let old = stina.innerHTML
+      stina.innerHTML = data.date + '<br><br>' + old;
+    } else {
+      let old = em.innerHTML
+      em.innerHTML = data.date + '<br><br>' + old;
+    }
+  });
+
+    </script>
+  </body>
+</html>

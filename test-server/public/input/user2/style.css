@@ -1,0 +1,18 @@
+body {
+  margin: 0px;
+  display: flex;
+  flex-direction: column;
+  font-family: "IBM Plex Mono", monospace !important;
+}
+
+h1 {
+  display: block;
+}
+
+button {
+  width: 50%;
+  height: 80px;
+  font-family: "IBM Plex Mono", monospace !important;
+  text-transform: uppercase;
+  align-self: center;
+}

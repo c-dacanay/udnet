@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;1,200;1,400;1,600&display=swap"
+    rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body>
+    <h1>User 3: Emily</h1>
+    <button id="check-in">Check-In</button>
+    <script>
+      // Open and connect input socket
+let socket = io('/input');
+let button = document.getElementById("check-in")
+
+socket.on('connect', () => {
+  console.log("Connected");
+});
+
+
+socket.on('disconnect', () => {
+  console.log("Disconnected");
+});
+
+socket.on('data', (data) =>{
+    console.log('recieving data', data.client, data.date);
+  });
+
+button.addEventListener("click", () => {
+  let today = new Date();
+  let dateString = String(today);
+  let data = {
+    client: 3,
+    date: dateString
+    }
+  socket.emit('data', data);
+});
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,35 @@
+html,
+body {
+  margin: 0px;
+  width: 100%;
+  height: 100%;
+  font-family: "IBM Plex Mono", monospace !important;
+}
+
+h1 {
+  display: block;
+}
+
+#container {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  width: 100%;
+  text-align: center;
+}
+
+#ben {
+  background-color: #000080;
+  color: white;
+}
+#stina {
+  background-color: #f88379;
+}
+#em {
+  background-color: #93e9be;
+}
+
+.client {
+  width: 33%;
+  height: 100%;
+}
