@@ -1,4 +1,7 @@
 // Create server
+//public server which can receive and parse url-encoded value pairs to console log and send status code response
+
+
 const  express = require('express');
 const  bodyParser = require('body-parser');
 let port = process.env.PORT || 8080;
