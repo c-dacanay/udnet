@@ -1,9 +1,8 @@
 // Create server
 //public server which can receive and parse url-encoded value pairs to console log and send status code response
 
-
-const  express = require('express');
-const  bodyParser = require('body-parser');
+const express = require('express');
+const bodyParser = require('body-parser');
 const mysql = require('mysql');
 const cors = require('cors');
 
@@ -19,7 +18,7 @@ const debug = require('debug')('app:server');
 
 // mysql connection pool
 const pool = mysql.createPool({
-  connectionLimit : 10,
+  connectionLimit: 10,
   host: process.env.CONN_DEV_HOST,
   user: process.env.CONN_DEV_USER,
   password: process.env.CONN_DEV_PASSWORD,
@@ -29,7 +28,7 @@ const pool = mysql.createPool({
 
 // Express Middleware to verify every request contains a valid 
 // macAddress and sessionKey combination
-const authorizedDevice = function(req, res, next) {
+const authorizedDevice = function (req, res, next) {
   const macAddress = req.body.macAddress || req.query.macAddress;
   const sessionKey = req.body.sessionKey || req.query.sessionKey;
 
@@ -62,43 +61,22 @@ let server = require('http').createServer(app).listen(port, function () {
 
 app.use(express.static('public'));
 app.use(logger('dev'));  //log to console
-app.use(logger('combined', { stream: accessLogStream})); //log to file
+app.use(logger('combined', { stream: accessLogStream })); //log to file
 app.use(cors());  //enable cross-origin resource sharing
 app.use(bodyParser.json());
 //source: https://expressjs.com/en/resources/middleware/body-parser.html#bodyparserurlencodedoptions
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(authorizedDevice);
 
-
-app.get("/", (req, res) => {
-  console.log("It got get-ted!")
-});
-
-app.get("/api/route", (req, res) => {
-  console.log("It got get-ted!")
-});
-
-app.post("/", (req, res) => {
-  console.log("It got posted!")
-  console.log(req.body)
-  res.status(200).end();
-});
-
-app.post("/post-test", (req, res) => {
-  console.log("It got posted to the test!")
-  console.log(req.body);
-res.status(200).end();
-});
-
 // Add data point to databases
-app.post('/data', function(req,res) {
+app.post('/data', function (req, res) {
   const macAddress = req.body.macAddress;
   const data = req.body.data;
   if (!data) {
     res.status(400).send(`Bad request, data can not be null\n`);
     return;
   }
-  
+
   const insert = 'INSERT INTO readings (mac_address, data_point) VALUES (?,?)';
   const params = [macAddress, data];
   debug(insert, params);
@@ -113,11 +91,11 @@ app.post('/data', function(req,res) {
       res.status(201).send(`Created ${results.insertId}\n`);
     }
   });
-  
+
 });
 
 // Get all the data submitted for a MAC address
-app.get('/data', function(req,res) {
+app.get('/data', function (req, res) {
   const macAddress = req.body.macAddress || req.query.macAddress;
   const query = 'SELECT id as transactionID, mac_address as macAddress, data_point as data, recorded_at as timestamp FROM readings WHERE mac_address=?';
   const params = [macAddress];
@@ -131,7 +109,7 @@ app.get('/data', function(req,res) {
 });
 
 // Get one record by id and MAC address
-app.get('/data/:transactionID', function(req,res) {
+app.get('/data/:transactionID', function (req, res) {
   const transactionID = req.params.transactionID;
   //const macAddress = req.body.macAddress;
   const macAddress = req.query.macAddress;
@@ -151,7 +129,7 @@ app.get('/data/:transactionID', function(req,res) {
 });
 
 // Delete one record by id and MAC address
-app.delete('/data/:transactionID', function(req,res) {
+app.delete('/data/:transactionID', function (req, res) {
   const transactionID = req.params.transactionID;
   const macAddress = req.body.macAddress;
 
@@ -167,210 +145,3 @@ app.delete('/data/:transactionID', function(req,res) {
     }
   });
 });
-
-benmoll@ubuntu-s-1vcpu-1gb-nyc1-01:~/udnet/test-server$ cat server_db.js | pbcopy
-
-Command 'pbcopy' not found, did you mean:
-
-  command 'bcopy' from deb bacula-sd (9.4.2-2ubuntu5)
-
-Try: sudo apt install <deb name>
-
-benmoll@ubuntu-s-1vcpu-1gb-nyc1-01:~/udnet/test-server$ xlip
-
-Command 'xlip' not found, did you mean:
-
-  command 'xflip' from deb xflip (1.01-27)
-  command 'clip' from deb geomview (1.9.5-3build1)
-  command 'xclip' from deb xclip (0.13-1)
-  command 'xzip' from deb xzip (1:1.8.2-4build1)
-  command 'flip' from deb flip (1.20-4)
-  command 'xli' from deb xli (1.17.0+20061110-5build1)
-
-Try: sudo apt install <deb name>
-
-benmoll@ubuntu-s-1vcpu-1gb-nyc1-01:~/udnet/test-server$ xclip
-
-Command 'xclip' not found, but can be installed with:
-
-sudo apt install xclip
-
-benmoll@ubuntu-s-1vcpu-1gb-nyc1-01:~/udnet/test-server$ cat server_db.js | pbcopy
-
-Command 'pbcopy' not found, did you mean:
-
-  command 'bcopy' from deb bacula-sd (9.4.2-2ubuntu5)
-
-Try: sudo apt install <deb name>
-
-benmoll@ubuntu-s-1vcpu-1gb-nyc1-01:~/udnet/test-server$ cat server_db.js
-// Create server
-//public server which can receive and parse url-encoded value pairs to console log and send status code response
-
-
-const  express = require('express');
-const  bodyParser = require('body-parser');
-const mysql = require('mysql');
-const cors = require('cors');
-
-// logging
-const fs = require('fs');
-const logger = require('morgan');
-const path = require('path');
-// create a write stream (in append mode)
-const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
-
-// start app with `DEBUG=app:* node .` to see logs
-const debug = require('debug')('app:server');
-
-// mysql connection pool
-const pool = mysql.createPool({
-  connectionLimit : 10,
-  host: process.env.CONN_DEV_HOST,
-  user: process.env.CONN_DEV_USER,
-  password: process.env.CONN_DEV_PASSWORD,
-  database: process.env.CONN_DEV_DB
-});
-
-
-// Express Middleware to verify every request contains a valid 
-// macAddress and sessionKey combination
-const authorizedDevice = function(req, res, next) {
-  const macAddress = req.body.macAddress || req.query.macAddress;
-  const sessionKey = req.body.sessionKey || req.query.sessionKey;
-
-  const query = 'SELECT mac_address FROM authorized_device WHERE mac_address = ? and session_key = ?';
-  const params = [macAddress, sessionKey];
-
-  pool.query(query, params, (error, results, fields) => {
-    if (error) {
-      console.error(error);
-      res.status(500).send('server error\n');
-    } else {
-      if (results.length === 1) {
-        debug(`${macAddress} is authorized`);
-        next();
-      } else {
-        debug(`${macAddress} is denied. Invalid sessionKey.`);
-        res.status(401).send('unauthorized\n');
-      }
-    }
-  });
-}
-
-
-let port = process.env.PORT || 8080;
-let app = express();
-let server = require('http').createServer(app).listen(port, function () {
-  console.log('Server listening at port: ', port);
-});
-
-
-app.use(express.static('public'));
-app.use(logger('dev'));  //log to console
-app.use(logger('combined', { stream: accessLogStream})); //log to file
-app.use(cors());  //enable cross-origin resource sharing
-app.use(bodyParser.json());
-//source: https://expressjs.com/en/resources/middleware/body-parser.html#bodyparserurlencodedoptions
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(authorizedDevice);
-
-
-app.get("/", (req, res) => {
-  console.log("It got get-ted!")
-});
-
-app.get("/api/route", (req, res) => {
-  console.log("It got get-ted!")
-});
-
-app.post("/", (req, res) => {
-  console.log("It got posted!")
-  console.log(req.body)
-  res.status(200).end();
-});
-
-app.post("/post-test", (req, res) => {
-  console.log("It got posted to the test!")
-  console.log(req.body);
-res.status(200).end();
-});
-
-// Add data point to databases
-app.post('/data', function(req,res) {
-  const macAddress = req.body.macAddress;
-  const data = req.body.data;
-  if (!data) {
-    res.status(400).send(`Bad request, data can not be null\n`);
-    return;
-  }
-  
-  const insert = 'INSERT INTO readings (mac_address, data_point) VALUES (?,?)';
-  const params = [macAddress, data];
-  debug(insert, params);
-
-  pool.query(insert, params, (error, results, fields) => {
-    if (error) {
-      console.error(error);
-      res.status(500).send('server error\n');
-    } else {
-      // location header points to the new resource
-      res.location(`/data/${results.insertId}`);
-      res.status(201).send(`Created ${results.insertId}\n`);
-    }
-  });
-  
-});
-
-// Get all the data submitted for a MAC address
-app.get('/data', function(req,res) {
-  const macAddress = req.body.macAddress || req.query.macAddress;
-  const query = 'SELECT id as transactionID, mac_address as macAddress, data_point as data, recorded_at as timestamp FROM readings WHERE mac_address=?';
-  const params = [macAddress];
-  debug(query, params);
-
-  pool.query(query, params, (error, results, fields) => {
-    // return pretty JSON which is inefficient but much easier to understand
-    res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify(results, null, 2));
-  });
-});
-
-// Get one record by id and MAC address
-app.get('/data/:transactionID', function(req,res) {
-  const transactionID = req.params.transactionID;
-  //const macAddress = req.body.macAddress;
-  const macAddress = req.query.macAddress;
-  const query = 'SELECT id as transactionID, mac_address as macAddress, data_point as data, recorded_at as timestamp FROM readings WHERE id=? AND mac_address=?';
-  const params = [transactionID, macAddress];
-  debug(query, params);
-
-  pool.query(query, params, (error, results, fields) => {
-    if (results.length > 0) {
-      // return pretty JSON which is inefficient but much easier to understand
-      res.setHeader('Content-Type', 'application/json');
-      res.end(JSON.stringify(results[0], null, 2));
-    } else {
-      res.status(404).send(`Id ${transactionID} not found for ${macAddress}\n`);
-    }
-  });
-});
-
-// Delete one record by id and MAC address
-app.delete('/data/:transactionID', function(req,res) {
-  const transactionID = req.params.transactionID;
-  const macAddress = req.body.macAddress;
-
-  const query = 'DELETE FROM readings WHERE mac_address = ? AND id = ?';
-  const params = [macAddress, transactionID];
-  debug(query, params);
-
-  pool.query(query, params, (error, results, fields) => {
-    if (results.affectedRows > 0) {
-      res.status(200).send('OK\n');
-    } else {
-      res.status(404).send(`Id ${transactionID} not found\n`);
-    }
-  });
-});
-
