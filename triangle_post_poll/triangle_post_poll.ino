@@ -67,6 +67,9 @@ void setup() {
 }
 
 void loop() {
+  
+  //get latest data function call
+  getLatest();
 
   //check for updates from other devices
   getFriend1PotUpdate();
