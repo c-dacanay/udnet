@@ -18,8 +18,8 @@ bool friend1_update = false;
 bool friend2_update = false;
 int getStatusCode1 = 0;
 int getStatusCode2 = 0;
-int last_friend1_ID = 0;
-int last_friend2_ID = 0;
+int last_friend1_ID = 1;
+int last_friend2_ID = 1;
 
 WiFiClient wifi;
 HttpClient client = HttpClient(wifi, serverAddress, port);
@@ -102,7 +102,8 @@ String getLatest(){
   Serial.println("making GET request for LATEST");
   client.beginRequest();
 
-  String get_data = "/latest/";
+  //replace mac under here with your mac address
+  String get_data = "/latest/?macAddress=4C:11:AE:C9:6A:E8&sessionKey=12345678";
 
   client.get(get_data);
   client.endRequest();
