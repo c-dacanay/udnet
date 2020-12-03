@@ -94,6 +94,20 @@ app.post('/data', function (req, res) {
 
 });
 
+// Get latest data from each MAC address
+app.get('/latest', function (req, res) {
+  const macAddress = req.body.macAddress || req.query.macAddress;
+  const query = 'SELECT mac_address,recorded_at,data_point FROM readings s1 WHERE recorded_at= (SELECT MAX(recorded_at) FROM readings s2 WHERE s1.mac_address = s2.mac_address) ORDER BY mac_address, recorded_at;';
+  const params = [macAddress];
+  debug(query, params);
+
+  pool.query(query, params, (error, results, fields) => {
+    // return pretty JSON which is inefficient but much easier to understand
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify(results, null, 2));
+  });
+});
+
 // Get all the data submitted for a MAC address
 app.get('/data', function (req, res) {
   const macAddress = req.body.macAddress || req.query.macAddress;
