@@ -76,7 +76,8 @@ String getLatest() {
 }
 
 void friendDataCheck() {
-  const size_t capacity = (JSON_ARRAY_SIZE(4) * JSON_OBJECT_SIZE(3)) + 30;
+  //const size_t capacity = (JSON_ARRAY_SIZE(4) * JSON_OBJECT_SIZE(3)) + 30;
+  const size_t capacity = (JSON_ARRAY_SIZE(5) * JSON_OBJECT_SIZE(3)) + 30;
   DynamicJsonDocument doc(capacity);
 
   //our json object comes from our get request of the mini table, print it to SM for debugging
@@ -98,14 +99,14 @@ void friendDataCheck() {
 
   //Emily MAC: A4:CF:12:22:1A:1C
   //Ben MAC: 4C:11:AE:C9:6A:E8
-  //Christina MAC: A4:CF:12:23:4E:7C
+  //Christina MAC: 3C:71:BF:87:C1:D8
 
 
   //comment out mine and uncomment the code under your name
 
   //Ben LED code:
   //map friend 1 and 2 to LED brightness, friend1 = emily, friend2 = christina
-  int brightness1 = map(mac2_latestData, 0, 10, 0, 255);
+  int brightness1 = map(mac1_latestData, 0, 10, 0, 255);
   analogWrite(LEDPin1, brightness1);
   delay(30);
 
@@ -118,16 +119,16 @@ void friendDataCheck() {
   //  analogWrite(LEDPin1, brightness1);
   //  delay(30);
   //
-  //  int brightness2 = map(mac3_latestData, 0, 10, 0, 255);
+  //  int brightness2 = map(mac2_latestData, 0, 10, 0, 255);
   //  analogWrite(LEDPin2, brightness2);
   //  delay(30);
 
   //Christina LED Code:
-  //  int brightness1 = map(mac1_latestData, 0, 10, 0, 255);
+  //  int brightness1 = map(mac2_latestData, 0, 10, 0, 255);
   //  analogWrite(LEDPin1, brightness1);
   //  delay(30);
   //
-  //  int brightness2 = map(mac2_latestData, 0, 10, 0, 255);
+  //  int brightness2 = map(mac3_latestData, 0, 10, 0, 255);
   //  analogWrite(LEDPin2, brightness2);
   //  delay(30);
 
